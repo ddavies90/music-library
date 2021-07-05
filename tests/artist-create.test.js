@@ -25,6 +25,7 @@ describe('/artist', () => {
         const [[artistEntries]] = await db.query(
         `SELECT * FROM Artist WHERE name = 'Tame Impala'`
         );
+        console.log(artistEntries);
 
         expect(artistEntries.name).to.equal('Tame Impala');
         expect(artistEntries.genre).to.equal('rock');
