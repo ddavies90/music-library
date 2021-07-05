@@ -6,4 +6,8 @@ app.use(express.json());
 
 app.use('/artist', artistRouter);
 
+// process.on('unhandledRejection', error => {
+//     console.log('unhandledRejection', error)
+// });
+
 module.exports = app;
