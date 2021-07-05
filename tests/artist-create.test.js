@@ -22,7 +22,7 @@ describe('/artist', () => {
 
         expect(res.status).to.equal(201);
 
-        const [[artistEntries]] = await db.query(
+        const [[artistEntries]]§ = await db.query(
         `SELECT * FROM Artist WHERE name = 'Tame Impala'`
         );
         console.log(artistEntries);
