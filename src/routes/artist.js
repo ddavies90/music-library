@@ -12,6 +12,6 @@ router.route('/:id')
     .patch(artistController.update)
     .delete(artistController.delete)
 
-router.post('/:id/album', albumController.create)
+router.post('/:artistId/album', albumController.create)
 
 module.exports = router;
