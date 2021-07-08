@@ -11,8 +11,8 @@ exports.create = async (req, res) => {
         ]);
         res.status(201).json(req.body);
     } catch (err) {
-        res.Status(500).json(err);
-    }
+        res.sendStatus(500);
+    };
     db.close();
 };
 
@@ -23,8 +23,8 @@ exports.read = async (__, res) => {
         const [artists] = await db.query('SELECT * FROM Artist');
         res.status(200).send(artists);
     } catch (err) {
-        res.status(500).json(err);
-    }
+        res.sendStatus(500)
+    };
     db.close();
 };
 
@@ -38,10 +38,10 @@ exports.getById = async (req, res) => {
             res.sendStatus(404);
         } else {
             res.status(200).json(artist);
-        }
+        };
     } catch (err) {
-        res.status(500).json(err);
-    }
+        res.sendStatus(500);
+    };
     db.close();
 };
 
@@ -57,10 +57,10 @@ exports.update = async (req, res) => {
         } else {
             await db.query('UPDATE Artist SET ? WHERE id = ?', [data, id]);
             res.sendStatus(200);
-        }
+        };
     } catch (err) {
-        res.status(500).json(err);
-    }
+        res.sendStatus(500);
+    };
     db.close();
 };
 
@@ -75,9 +75,9 @@ exports.delete = async (req, res) => {
         } else {
             await db.query('DELETE FROM Artist WHERE id = ?', [id]);
             res.sendStatus(200);
-        }
+        };
     } catch (err) {
-        res.status(500).send(err);
+        res.sendStatus(500);
     }
     db.close();
 };
