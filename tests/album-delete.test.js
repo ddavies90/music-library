@@ -39,7 +39,7 @@ describe('delete album', () => {
                 [deletedAlbumRecord],
                 ] = await db.query('SELECT * FROM Album WHERE id = ?', [album.id]);
 
-                expect(!!deletedAlbumRecord).to.be.false;
+                expect(deletedAlbumRecord).to.not.exist;
             });
 
             it('returns a 404 if the album is not in the database', async () => {
