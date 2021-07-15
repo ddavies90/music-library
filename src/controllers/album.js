@@ -12,25 +12,24 @@ exports.create = async (req, res) => {
             artistId
         ]);
 
-        //insertId grabs the last 
+        //insertId is from ResultSetHeader object returned by querying db and grabs the most recently generated auto-incremented ID value
         res.status(201).json({id: dbRes.insertId, name, year, artistId});
     } catch (err) {
-        res.sendStatus(500);
+        console.error(err);
+        res.status(500).send(err);
     }
     db.close();
 };
 
-exports.read = async (__, res) => {
+exports.read = async (_, res) => {
     const db = await getDb();
     
     try {
-        //If wanted a joined table:
-        // const [albums] = await db.query({sql: 'SELECT * FROM Artist LEFT JOIN Album ON Artist.id = Album.artistId', nestTables: '_'});
-        const [albums] = await db.query('SELECT * FROM Album');
+        const [albums] = await db.query({sql: 'SELECT * FROM Album LEFT JOIN Artist ON Artist.id = Album.artistId', nestTables: '_'});
         res.status(200).send(albums);
     } catch (err) {
         console.error(err);
-        res.sendStatus(500);
+        res.status(500).send(err);
     }
     db.close();
 }
@@ -38,17 +37,17 @@ exports.read = async (__, res) => {
 exports.readById = async (req, res) => {
     const db = await getDb();
     const { albumId } = req.params;
-    console.log(albumId)
 
     try {
-        const [[album]] = await db.query('SELECT * FROM Album WHERE id = ?', [albumId]);
+        const [[album]] = await db.query({sql: 'SELECT * FROM Album LEFT JOIN Artist ON Artist.id = Album.artistId WHERE Album.id = ?', nestTables: '_'}, [albumId]);
         if (!album) {
             res.sendStatus(404);
         } else {
             res.status(200).json(album);
         }
     } catch (err) {
-        res.sendStatus(500);
+        console.error(err);
+        res.status(500).send(err);
     }
     db.close();
 };
@@ -71,7 +70,8 @@ exports.update = async (req, res) => {
         } 
     }
     catch (err) {
-        res.sendStatus(500);
+        console.error(err);
+        res.status(500).send(err);
     }
     db.close()
 };
@@ -81,15 +81,15 @@ exports.delete = async (req, res) => {
     const { albumId } = req.params;
 
     try {
-        const [[album]] = await db.query('SELECT * FROM Album WHERE id = ?', [albumId]);
-        if (!album) {
-            res.sendStatus(404);
+        const [ dbRes ] = await db.query('DELETE FROM Album WHERE id = ?', [albumId]);
+        if (!dbRes.affectedRows) {
+            res.status(404).send('This album does not exist')
         } else {
-            await db.query('DELETE FROM Album WHERE id = ?', [albumId]);
             res.sendStatus(200);
-        };
+        }   
     } catch (err) {
-        res.sendStatus(500);
+        console.error(err);
+        res.status(500).send(err);
     };
     db.close();
 };
