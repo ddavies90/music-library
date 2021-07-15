@@ -9,8 +9,4 @@ app.use('/artist', artistRouter);
 
 app.use('/album', albumRouter);
 
-// process.on('unhandledRejection', error => {
-//     console.log('unhandledRejection', error)
-// });
-
 module.exports = app;
