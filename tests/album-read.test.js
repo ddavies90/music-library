@@ -24,7 +24,7 @@ describe('read album', () => {
             ]),
         ]);
 
-        [albums] = await db.query('SELECT * FROM Album');
+        [albums] = await db.query({sql: 'SELECT * FROM Album LEFT JOIN Artist ON Artist.id = Album.artistId', nestTables: '_'});
     });
 
     afterEach(async () => {
@@ -39,9 +39,8 @@ describe('read album', () => {
 
                 expect (res.status).to.equal(200);
                 expect (res.body.length).to.equal(3);
-
                 res.body.forEach(albumRecord => {
-                    const expectedRecord = albums.find(album => album.id === albumRecord.id);
+                    const expectedRecord = albums.find(album => album.Album_id === albumRecord.Album_id);
 
                     expect(albumRecord).to.deep.equal(expectedRecord);
                 });
@@ -53,7 +52,8 @@ describe('read album', () => {
         describe('GET', () => {
             it('returns a single album with correct id', async () =>{
                 const expectedAlbum = albums[0];
-                const res = await request(app).get(`/album/${expectedAlbum.id}`).send();
+                console.log(expectedAlbum)
+                const res = await request(app).get(`/album/${expectedAlbum.Album_id}`).send();
 
                 expect(res.status).to.equal(200);
                 expect(res.body).to.deep.equal(expectedAlbum);
