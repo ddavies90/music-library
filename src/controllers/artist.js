@@ -5,11 +5,12 @@ exports.create = async (req, res) => {
     const { name, genre } = req.body;
 
     try {
-        await db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
+        const [ dbRes ] = await db.query(`INSERT INTO Artist (name, genre) VALUES (?, ?)`, [
             name,
             genre
         ]);
-        res.status(201).json(req.body);
+        const id = dbRes.insertId;
+        res.status(201).json({id, name, genre});
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
@@ -17,7 +18,7 @@ exports.create = async (req, res) => {
     db.close();
 };
 
-exports.read = async (__, res) => {
+exports.read = async (_, res) => {
     const db = await getDb();
 
     try {
@@ -54,8 +55,8 @@ exports.update = async (req, res) => {
     const data = req.body;
 
     try {
-        const [[artist]] = await db.query('SELECT * FROM Artist WHERE id = ?', [id]);
-        if (!artist) {
+        const [ dbRes ] = await db.query('UPDATE Artist SET ? WHERE id = ?', [data, id]);
+        if (!dbRes.affectedRows) {
             res.sendStatus(404);
         } else {
             await db.query('UPDATE Artist SET ? WHERE id = ?', [data, id]);

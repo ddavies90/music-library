@@ -55,7 +55,14 @@
                         "description": "Post a new artist to the database",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/artistPostObject"
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "genre": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 ],
@@ -71,17 +78,17 @@
             }
         },
         "/artist/{artistId}": {
+            "parameters": [
+                {
+                    "in": "path",
+                    "type": "number",
+                    "name": "artistId",
+                    "required": true
+                }
+            ],
             "get": {
                 "tags": ["Artist"],
                 "summary": "Retrieves the artist associated with the ID passed in",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "type": "number",
-                        "name": "artistId",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Artist successfully retrieved",
@@ -94,6 +101,19 @@
                         "description": "Artist not found"
                     }
                 }
+            },
+            "patch": {
+                "tags": ["Artist"],
+                "summary": "Updates the artist record with the new data",
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated record",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistObject"
+                        }
+                    }
+                }
             }
         }
     },
@@ -103,20 +123,6 @@
                 "id": {
                     "type": "integer"
                 },
-                "name": {
-                    "type": "string"
-                },
-                "genre": {
-                    "type": "string"
-                }
-            }
-        },
-        "artistPostObject": {
-            "required": [
-                "name",
-                "genre"
-            ],
-            "properties": {
                 "name": {
                     "type": "string"
                 },
