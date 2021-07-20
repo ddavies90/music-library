@@ -1,0 +1,143 @@
+{
+    "swagger":"2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Music Library API",
+        "description": "API for manipulating a database of the music I hold dear",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "basePath": "/",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "tags": [
+        {
+            "name": "Artist",
+            "description": "Endpoints for interacting with artist related data"
+        },
+        {
+            "name": "Album",
+            "description": "Endpoints for interacting with album related data"
+        }
+    ],
+    "paths": {
+        "/artist": {
+            "get": {
+                "tags": ["Artist"],
+                "summary": "Retrieves all the artists records in the database",
+                "responses": {
+                    "200": {
+                        "description": "Data retrieved successfully",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistObject"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Artist"],
+                "summary": "Creates a new artist record in the database",
+                "parameters": [
+                    {
+                        "name": "newArtist",
+                        "in": "body",
+                        "description": "Post a new artist to the database",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistPostObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "New artist created",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistObject"
+                        }
+                    }
+                }
+            }
+        },
+        "/artist/{artistId}": {
+            "get": {
+                "tags": ["Artist"],
+                "summary": "Retrieves the artist associated with the ID passed in",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "type": "number",
+                        "name": "artistId",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Artist successfully retrieved",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistObject"
+                        }
+                    },
+                    "404": {
+                        "description": "Artist not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "artistObject": {
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "genre": {
+                    "type": "string"
+                }
+            }
+        },
+        "artistPostObject": {
+            "required": [
+                "name",
+                "genre"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "genre": {
+                    "type": "string"
+                }
+            }
+        },
+        "albumPostObject": {
+            "required": [
+                "name",
+                "year"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
