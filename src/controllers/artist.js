@@ -37,7 +37,7 @@ exports.getById = async (req, res) => {
     try {
         const [[artist]] = await db.query('SELECT * FROM Artist WHERE id = ?', [id]);
         if (!artist) {
-            res.sendStatus(404);
+            res.status(404).send('There is no record associated with this ID');
         } else {
             res.status(200).json(artist);
         };
