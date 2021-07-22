@@ -52,7 +52,6 @@ describe('read album', () => {
         describe('GET', () => {
             it('returns a single album with correct id', async () =>{
                 const expectedAlbum = albums[0];
-                console.log(expectedAlbum)
                 const res = await request(app).get(`/album/${expectedAlbum.Album_id}`).send();
 
                 expect(res.status).to.equal(200);
