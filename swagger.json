@@ -39,8 +39,10 @@
                     "200": {
                         "description": "Data retrieved successfully",
                         "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/artistObject"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/artistObject"
+                            }
                         }
                     }
                 }
@@ -53,16 +55,10 @@
                         "name": "newArtist",
                         "in": "body",
                         "description": "Post a new artist to the database",
+                        "required": true,
                         "schema": {
                             "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "genre": {
-                                    "type": "string"
-                                }
-                            }
+                            "$ref": "#/definitions/artistPostObject"
                         }
                     }
                 ],
@@ -105,12 +101,84 @@
             "patch": {
                 "tags": ["Artist"],
                 "summary": "Updates the artist record with the new data",
+                "parameters": [
+                    {
+                        "name": "updateFields",
+                        "in": "body",
+                        "description": "Fields to be updated in the artist table",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistPostObject"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successfully updated record",
                         "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Artist not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Artist"],
+                "summary": "Deletes the artist record associated with the passed in id",
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Artist not found"
+                    }
+                }
+            }
+        },
+        "/artist/:artistId/album": {
+            "parameters": [
+                {
+                    "in": "path",
+                    "type": "number",
+                    "name": "artistId",
+                    "required": true
+                }
+            ],
+            "post": {
+                "tags": ["Album"],
+                "summary": "Creates an album associated with an artist in the database",
+                "parameters": [
+                    
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Album successfully created",
+                        "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/artistObject"
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Currents"
+                                },
+                                "year": {
+                                    "type": "integer",
+                                    "example": 2015
+                                },
+                                "artistId": {
+                                    "type": "integer",
+                                    "example": 3
+                                }
+                            }
                         }
                     }
                 }
@@ -119,15 +187,32 @@
     },
     "definitions": {
         "artistObject": {
+            "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Led Zeppelin"
                 },
                 "genre": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Rock"
+                }
+            }
+        },
+        "artistPostObject": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Led Zeppelin"
+                },
+                "genre": {
+                    "type": "string",
+                    "example": "Rock"
                 }
             }
         },
@@ -142,6 +227,15 @@
                 },
                 "year": {
                     "type": "integer"
+                }
+            }
+        },
+        "updatedEntry": {
+            "type": "object",
+            "properties": {
+                "rowsUpdated": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         }
