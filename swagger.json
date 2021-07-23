@@ -180,6 +180,12 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Invalid artist id. Please check the value and try again"
+                    },
+                    "500": {
+                        "description": "Internal server error"
                     }
                 }
             }
