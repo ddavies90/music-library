@@ -16,7 +16,11 @@ exports.create = async (req, res) => {
         res.status(201).json({id: dbRes.insertId, name, year, artistId});
     } catch (err) {
         console.error(err);
+        if(err.errno === 1452) {
+            res.status(404).send("Invalid artist id. Please check the value and try again.");
+        } else {
         res.status(500).send(err);
+        }
     }
     db.close();
 };
