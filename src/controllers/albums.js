@@ -6,7 +6,7 @@ exports.create = async (req, res) => {
     const { artistId } = req.params;
 
     try {
-        const [ dbRes ] = await db.query(`INSERT INTO Album (name, year, artistId) VALUES (?, ?, ?)`, [
+        const [ dbRes ] = await db.query(`INSERT INTO Albums (name, year, artistId) VALUES (?, ?, ?)`, [
             name,
             year,
             artistId
@@ -29,7 +29,7 @@ exports.read = async (_, res) => {
     const db = await getDb();
     
     try {
-        const [albums] = await db.query({sql: 'SELECT * FROM Album LEFT JOIN Artist ON Artist.id = Album.artistId', nestTables: '_'});
+        const [albums] = await db.query({sql: 'SELECT * FROM Albums LEFT JOIN Artists ON Artists.id = Albums.artistId', nestTables: '_'});
         res.status(200).send(albums);
     } catch (err) {
         console.error(err);
@@ -43,7 +43,7 @@ exports.readById = async (req, res) => {
     const { albumId } = req.params;
 
     try {
-        const [[album]] = await db.query({sql: 'SELECT * FROM Album LEFT JOIN Artist ON Artist.id = Album.artistId WHERE Album.id = ?', nestTables: '_'}, [albumId]);
+        const [[album]] = await db.query({sql: 'SELECT * FROM Albums LEFT JOIN Artist ON Artists.id = Albums.artistId WHERE Albums.id = ?', nestTables: '_'}, [albumId]);
         if (!album) {
             res.sendStatus(404);
         } else {
@@ -62,11 +62,11 @@ exports.update = async (req, res) => {
     const data = req.body;
 
     try {
-        const [[album]] = await db.query('SELECT * FROM Album WHERE id = ?', [albumId]);
+        const [[album]] = await db.query('SELECT * FROM Albums WHERE id = ?', [albumId]);
         if (!album) {
             res.sendStatus(404);
         } else {
-            await db.query('UPDATE Album SET ? WHERE id = ?', [
+            await db.query('UPDATE Albums SET ? WHERE id = ?', [
                 data,
                 albumId
             ]);
@@ -85,7 +85,7 @@ exports.delete = async (req, res) => {
     const { albumId } = req.params;
 
     try {
-        const [ dbRes ] = await db.query('DELETE FROM Album WHERE id = ?', [albumId]);
+        const [ dbRes ] = await db.query('DELETE FROM Albums WHERE id = ?', [albumId]);
         if (!dbRes.affectedRows) {
             res.status(404).send('This album does not exist')
         } else {
@@ -94,6 +94,6 @@ exports.delete = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
-    };
+    }
     db.close();
 };

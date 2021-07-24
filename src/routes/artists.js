@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const artistController = require('../controllers/artist');
-const albumController = require('../controllers/album');
+const artistController = require('../controllers/artists');
+const albumController = require('../controllers/albums');
 
 router.route('/')
     .post(artistController.create)
@@ -12,6 +12,6 @@ router.route('/:id')
     .patch(artistController.update)
     .delete(artistController.delete)
 
-router.post('/:artistId/album', albumController.create)
+router.post('/:artistId/albums', albumController.create)
 
 module.exports = router;

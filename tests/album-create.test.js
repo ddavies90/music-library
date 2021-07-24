@@ -10,35 +10,35 @@ describe('create album', () => {
     beforeEach(async () => {
         db = await getDb();
         await Promise.all([
-            db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+            db.query('INSERT INTO Artists (name, genre) VALUES(?, ?)', [
                 'Kylie Minogue',
                 'pop',
             ]),
-            db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+            db.query('INSERT INTO Artists (name, genre) VALUES(?, ?)', [
                 'Dave Brubeck',
                 'jazz',
             ]),
-            db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+            db.query('INSERT INTO Artists (name, genre) VALUES(?, ?)', [
                 'Dimension',
                 'DnB',
             ]),
         ]);
-        [artists] = await db.query('SELECT * from Artist');
+        [artists] = await db.query('SELECT * from Artists');
     });
 
     afterEach(async () => {
-        await db.query('DELETE FROM Album');
-        await db.query('DELETE FROM Artist');
+        await db.query('DELETE FROM Albums');
+        await db.query('DELETE FROM Artists');
         await db.close();
     });
 
-    describe('/artist/:artistId/album', () => {
+    describe('/artists/:artistId/albums', () => {
         describe('POST', () => {
             it('creates a new album in the database', async () => {
 
                 const artist = artists[2];
 
-                const res = await request(app).post(`/artist/${artist.id}/album`).send(
+                const res = await request(app).post(`/artists/${artist.id}/albums`).send(
                 {
                     name: 'Organ',
                     year: 2021,
@@ -47,7 +47,7 @@ describe('create album', () => {
                 expect(res.status).to.equal(201);
 
                 const [[albumEntries]] = await db.query(
-                    `SELECT * FROM Album WHERE id = ${res.body.id}`
+                    `SELECT * FROM Albums WHERE id = ${res.body.id}`
                 );
                 
                 expect(albumEntries.name).to.equal('Organ');

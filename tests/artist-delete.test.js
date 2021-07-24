@@ -9,45 +9,45 @@ describe('delete artist', () => {
     beforeEach(async () => {
         db = await getDb();
         await Promise.all([
-        db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+        db.query('INSERT INTO Artists (name, genre) VALUES(?, ?)', [
             'Tame Impala',
             'rock',
         ]),
-        db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+        db.query('INSERT INTO Artists (name, genre) VALUES(?, ?)', [
             'Kylie Minogue',
             'pop',
         ]),
-        db.query('INSERT INTO Artist (name, genre) VALUES(?, ?)', [
+        db.query('INSERT INTO Artists (name, genre) VALUES(?, ?)', [
             'Dave Brubeck',
             'jazz',
         ]),
         ]);
 
-        [artists] = await db.query('SELECT * from Artist');
+        [artists] = await db.query('SELECT * from Artists');
     });
 
     afterEach(async () => {
-        await db.query('DELETE FROM Artist');
+        await db.query('DELETE FROM Artists');
         await db.close();
     });
 
-    describe('/artist/:artistId', () => {
+    describe('/artists/:artistId', () => {
         describe('DELETE', () => {
             it('deletes a single artist with the correct id', async () => {
                 const artist = artists[0];
-                const res = await request(app).delete(`/artist/${artist.id}`).send();
+                const res = await request(app).delete(`/artists/${artist.id}`).send();
 
                 expect(res.status).to.equal(200);
 
                 const [
                 [deletedArtistRecord],
-                ] = await db.query('SELECT * FROM Artist WHERE id = ?', [artist.id]);
+                ] = await db.query('SELECT * FROM Artists WHERE id = ?', [artist.id]);
 
                 expect(!!deletedArtistRecord).to.be.false;
             });
 
             it('returns a 404 if the artist is not in the database', async () => {
-                const res = await request(app).delete('/artist/999999').send();
+                const res = await request(app).delete('/artists/999999').send();
 
                 expect(res.status).to.equal(404);
             });
