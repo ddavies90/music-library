@@ -13,7 +13,14 @@ exports.create = async (req, res) => {
         ]);
 
         //insertId is from ResultSetHeader object returned by querying db and grabs the most recently generated auto-incremented ID value
-        res.status(201).json({id: dbRes.insertId, name, year, artistId});
+        res.status(201).json( 
+            {
+                id: dbRes.insertId,
+                name,
+                year,
+                artistId
+            } 
+        );
     } catch (err) {
         console.error(err);
         if(err.errno === 1452) {
@@ -43,7 +50,7 @@ exports.readById = async (req, res) => {
     const { albumId } = req.params;
 
     try {
-        const [[album]] = await db.query({sql: 'SELECT * FROM Albums LEFT JOIN Artist ON Artists.id = Albums.artistId WHERE Albums.id = ?', nestTables: '_'}, [albumId]);
+        const [[album]] = await db.query({sql: 'SELECT * FROM Albums LEFT JOIN Artists ON Artists.id = Albums.artistId WHERE Albums.id = ?', nestTables: '_'}, [albumId]);
         if (!album) {
             res.sendStatus(404);
         } else {
@@ -62,22 +69,19 @@ exports.update = async (req, res) => {
     const data = req.body;
 
     try {
-        const [[album]] = await db.query('SELECT * FROM Albums WHERE id = ?', [albumId]);
-        if (!album) {
+        const [ dbRes ] = await db.query('UPDATE Albums SET ? WHERE id = ?', [data, albumId]);
+        if (!dbRes.affectedRows) {
             res.sendStatus(404);
         } else {
-            await db.query('UPDATE Albums SET ? WHERE id = ?', [
-                data,
-                albumId
-            ]);
-            res.sendStatus(200);
-        } 
-    }
-    catch (err) {
+            res.status(200).json({
+                rowsUpdated: dbRes.affectedRows
+            });
+        }
+    } catch (err) {
         console.error(err);
         res.status(500).send(err);
     }
-    db.close()
+    db.close();
 };
 
 exports.delete = async (req, res) => {
