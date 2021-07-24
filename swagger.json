@@ -199,7 +199,77 @@
                         }
                     },
                     "404": {
-                        "description": "Invalid artist id. Please check the value and try again"
+                        "description": "Invalid artist id. Please check the value and try again."
+                    }
+                }
+            }
+        },
+        "/albums": {
+            "get": {
+                "tags": ["Albums"],
+                "summary": "Retrieves all albums in the database with the associated artist information",
+                "responses": {
+                    "200": {
+                        "description": "Data retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/albumObject"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/albums/{albumId}": {
+            "parameters": [
+                {
+                    "name": "albumId",
+                    "in": "path",
+                    "type": "number",
+                    "required": true
+                }
+            ],
+            "get": {
+                "tags": ["Albums"],
+                "summary": "Retrieves the album associated with the ID passed in",
+                "responses": {
+                    "200": {
+                        "description": "Album successfully retrieved",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/albumObject"
+                        }
+                    },
+                    "404": {
+                        "description": "Album not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Albums"],
+                "summary": "Updates the album record with the new data",
+                "parameters": [
+                    {
+                        "name": "updateFields",
+                        "in": "body",
+                        "description": "Fields to be updated in the albums table",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/albumPostObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Album not found"
                     }
                 }
             }
@@ -231,6 +301,39 @@
                     "example": "Led Zeppelin"
                 },
                 "genre": {
+                    "type": "string",
+                    "example": "Rock"
+                }
+            }
+        },
+        "albumObject": {
+            "type": "object",
+            "properties": {
+                "Albums_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Albums_name": {
+                    "type": "string",
+                    "example": "Definitely Maybe"
+                },
+                "Albums_year": {
+                    "type": "integer",
+                    "example": 1994
+                },
+                "Albums_artistId": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Artists_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Artists_name": {
+                    "type": "string",
+                    "example": "Oasis"
+                },
+                "Artists_genre": {
                     "type": "string",
                     "example": "Rock"
                 }
