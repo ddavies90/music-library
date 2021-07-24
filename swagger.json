@@ -22,18 +22,18 @@
     ],
     "tags": [
         {
-            "name": "Artist",
+            "name": "Artists",
             "description": "Endpoints for interacting with artist related data"
         },
         {
-            "name": "Album",
+            "name": "Albums",
             "description": "Endpoints for interacting with album related data"
         }
     ],
     "paths": {
-        "/artist": {
+        "/artists": {
             "get": {
-                "tags": ["Artist"],
+                "tags": ["Artists"],
                 "summary": "Retrieves all the artists records in the database",
                 "responses": {
                     "200": {
@@ -48,7 +48,7 @@
                 }
             },
             "post": {
-                "tags": ["Artist"],
+                "tags": ["Artists"],
                 "summary": "Creates a new artist record in the database",
                 "parameters": [
                     {
@@ -73,7 +73,7 @@
                 }
             }
         },
-        "/artist/{artistId}": {
+        "/artists/{artistId}": {
             "parameters": [
                 {
                     "in": "path",
@@ -83,7 +83,7 @@
                 }
             ],
             "get": {
-                "tags": ["Artist"],
+                "tags": ["Artists"],
                 "summary": "Retrieves the artist associated with the ID passed in",
                 "responses": {
                     "200": {
@@ -99,7 +99,7 @@
                 }
             },
             "patch": {
-                "tags": ["Artist"],
+                "tags": ["Artists"],
                 "summary": "Updates the artist record with the new data",
                 "parameters": [
                     {
@@ -126,7 +126,7 @@
                 }
             },
             "delete": {
-                "tags": ["Artist"],
+                "tags": ["Artists"],
                 "summary": "Deletes the artist record associated with the passed in id",
                 "responses": {
                     "200": {
@@ -141,7 +141,7 @@
                 }
             }
         },
-        "/artist/:artistId/album": {
+        "/artists/{artistId}/albums": {
             "parameters": [
                 {
                     "in": "path",
@@ -151,10 +151,27 @@
                 }
             ],
             "post": {
-                "tags": ["Album"],
+                "tags": ["Albums"],
                 "summary": "Creates an album associated with an artist in the database",
                 "parameters": [
-                    
+                    {
+                        "name": "albumObj",
+                        "in": "body",
+                        "description": "Album data to be inserted in to db",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "Currents"
+                                },
+                                "year": {
+                                    "type": "integer",
+                                    "example": 2015
+                                }
+                            }
+                        }
+                    }
                 ],
                 "responses": {
                     "201": {
@@ -183,9 +200,6 @@
                     },
                     "404": {
                         "description": "Invalid artist id. Please check the value and try again"
-                    },
-                    "500": {
-                        "description": "Internal server error"
                     }
                 }
             }
