@@ -91,9 +91,11 @@ exports.delete = async (req, res) => {
     try {
         const [ dbRes ] = await db.query('DELETE FROM Albums WHERE id = ?', [albumId]);
         if (!dbRes.affectedRows) {
-            res.status(404).send('This album does not exist')
+            res.status(404).send('This album does not exist in the database')
         } else {
-            res.sendStatus(200);
+            res.status(200).json({
+                rowsUpdated: dbRes.affectedRows
+            });
         }   
     } catch (err) {
         console.error(err);

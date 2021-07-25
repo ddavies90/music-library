@@ -80,7 +80,7 @@ exports.delete = async (req, res) => {
     try {
         const [ dbRes ] = await db.query('DELETE FROM Artists WHERE id = ?', [id]);
         if (!dbRes.affectedRows) {
-            res.sendStatus(404);
+            res.status(404).send('This artist does not exist in the database');
         } else {
             res.status(200).json({
                 rowsUpdated: dbRes.affectedRows

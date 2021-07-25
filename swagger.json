@@ -272,6 +272,21 @@
                         "description": "Album not found"
                     }
                 }
+            },
+            "delete": {
+                "tags": ["Albums"],
+                "summary": "Deletes the album record associated with the passed in id",
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Album not found"
+                    }
+                }
             }
         }
     },
