@@ -10,11 +10,11 @@ const args = process.argv.slice(2)[0];
 const envFile = args === 'test' ? '../.env.test' : '../.env';
 
 // load environment variables from env files
-if (process.env.NODE_ENV == 'development' || args === 'test') {
+if (!process.env.NODE_ENV == 'production' || args == 'test') {
     require('dotenv').config({
     path: path.join(__dirname, envFile),
 });
-};
+}
 
 // destructure environment variables from process.env
 const { DB_PASSWORD, DB_NAME, DB_USER, DB_HOST, DB_PORT, CLEARDB_DATABASE_URL } = process.env;
