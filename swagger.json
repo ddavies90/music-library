@@ -1,0 +1,381 @@
+{
+    "swagger":"2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Music Library API",
+        "description": "API for manipulating a database of the music I hold dear",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "basePath": "/",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "tags": [
+        {
+            "name": "Artists",
+            "description": "Endpoints for interacting with artist related data"
+        },
+        {
+            "name": "Albums",
+            "description": "Endpoints for interacting with album related data"
+        }
+    ],
+    "paths": {
+        "/artists": {
+            "get": {
+                "tags": ["Artists"],
+                "summary": "Retrieves all the artists records in the database",
+                "responses": {
+                    "200": {
+                        "description": "Data retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/artistObject"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Artists"],
+                "summary": "Creates a new artist record in the database",
+                "parameters": [
+                    {
+                        "name": "newArtist",
+                        "in": "body",
+                        "description": "Post a new artist to the database",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistPostObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "New artist created",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistObject"
+                        }
+                    }
+                }
+            }
+        },
+        "/artists/{artistId}": {
+            "parameters": [
+                {
+                    "in": "path",
+                    "type": "number",
+                    "name": "artistId",
+                    "required": true
+                }
+            ],
+            "get": {
+                "tags": ["Artists"],
+                "summary": "Retrieves the artist associated with the ID passed in",
+                "responses": {
+                    "200": {
+                        "description": "Artist successfully retrieved",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistObject"
+                        }
+                    },
+                    "404": {
+                        "description": "Artist not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Artists"],
+                "summary": "Updates the artist record with the new data",
+                "parameters": [
+                    {
+                        "name": "updateFields",
+                        "in": "body",
+                        "description": "Fields to be updated in the artist table",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/artistPostObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Artist not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Artists"],
+                "summary": "Deletes the artist record associated with the passed in id",
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Artist not found"
+                    }
+                }
+            }
+        },
+        "/artists/{artistId}/albums": {
+            "parameters": [
+                {
+                    "in": "path",
+                    "type": "number",
+                    "name": "artistId",
+                    "required": true
+                }
+            ],
+            "post": {
+                "tags": ["Albums"],
+                "summary": "Creates an album associated with an artist in the database",
+                "parameters": [
+                    {
+                        "name": "albumObj",
+                        "in": "body",
+                        "description": "Album data to be inserted in to db",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "Currents"
+                                },
+                                "year": {
+                                    "type": "integer",
+                                    "example": 2015
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Album successfully created",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Currents"
+                                },
+                                "year": {
+                                    "type": "integer",
+                                    "example": 2015
+                                },
+                                "artistId": {
+                                    "type": "integer",
+                                    "example": 3
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Invalid artist id. Please check the value and try again."
+                    }
+                }
+            }
+        },
+        "/albums": {
+            "get": {
+                "tags": ["Albums"],
+                "summary": "Retrieves all albums in the database with the associated artist information",
+                "responses": {
+                    "200": {
+                        "description": "Data retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/albumObject"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/albums/{albumId}": {
+            "parameters": [
+                {
+                    "name": "albumId",
+                    "in": "path",
+                    "type": "number",
+                    "required": true
+                }
+            ],
+            "get": {
+                "tags": ["Albums"],
+                "summary": "Retrieves the album associated with the ID passed in",
+                "responses": {
+                    "200": {
+                        "description": "Album successfully retrieved",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/albumObject"
+                        }
+                    },
+                    "404": {
+                        "description": "Album not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Albums"],
+                "summary": "Updates the album record with the new data",
+                "parameters": [
+                    {
+                        "name": "updateFields",
+                        "in": "body",
+                        "description": "Fields to be updated in the albums table",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/albumPostObject"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Album not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Albums"],
+                "summary": "Deletes the album record associated with the passed in id",
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted record",
+                        "schema": {
+                            "$ref": "#/definitions/updatedEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Album not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "artistObject": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Led Zeppelin"
+                },
+                "genre": {
+                    "type": "string",
+                    "example": "Rock"
+                }
+            }
+        },
+        "artistPostObject": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Led Zeppelin"
+                },
+                "genre": {
+                    "type": "string",
+                    "example": "Rock"
+                }
+            }
+        },
+        "albumObject": {
+            "type": "object",
+            "properties": {
+                "Albums_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Albums_name": {
+                    "type": "string",
+                    "example": "Definitely Maybe"
+                },
+                "Albums_year": {
+                    "type": "integer",
+                    "example": 1994
+                },
+                "Albums_artistId": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Artists_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "Artists_name": {
+                    "type": "string",
+                    "example": "Oasis"
+                },
+                "Artists_genre": {
+                    "type": "string",
+                    "example": "Rock"
+                }
+            }
+        },
+        "albumPostObject": {
+            "required": [
+                "name",
+                "year"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "updatedEntry": {
+            "type": "object",
+            "properties": {
+                "rowsUpdated": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        }
+    }
+}
